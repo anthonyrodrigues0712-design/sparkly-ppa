@@ -67,4 +67,20 @@
     .bloqueio-titulo { font-size:1.5rem; font-weight:900; color:var(--red); margin-bottom:10px; }
     .bloqueio-texto { color:var(--muted); font-size:.9rem; font-weight:600; line-height:1.6; margin-bottom:28px; }
     .bloqueio-acoes { display:flex; flex-direction:column; gap:10px; }
+
+    /* ── Responsividade ── */
+    @media (max-width:600px){
+      #telaQuestao, #telaResultado, #telaBloqueada { padding:22px 16px; }
+      .q-nome { font-size:1.15rem; }
+      .acoes { flex-direction:column; }
+      .resultado-emoji { font-size:3.6rem; }
+      .resultado-titulo { font-size:1.5rem; }
+      .resultado-gamificacao { gap:12px; font-size:.82rem; }
+      .bloqueio-icone { font-size:3.6rem; }
+      .bloqueio-titulo { font-size:1.25rem; }
+    }
+    @media (max-width:380px){
+      #telaQuestao, #telaResultado, #telaBloqueada { padding:18px 12px; }
+      .q-nome { font-size:1.05rem; }
+    }
   

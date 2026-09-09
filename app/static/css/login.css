@@ -12,4 +12,13 @@
     .painel { display:none; } .painel.active { display:block; }
     .erro { display:none; margin-bottom:14px; }
     .owl { text-align:center; font-size:2.5rem; margin-bottom:12px; }
+
+    /* ── Responsividade ── */
+    @media (max-width:480px){
+      .wrap { padding:16px; max-width:100%; }
+      .logo-big { font-size:1.9rem; }
+      .tagline { font-size:.82rem; margin-bottom:24px; }
+      .tab { padding:8px; font-size:.8rem; }
+      .owl { font-size:2rem; }
+    }
   

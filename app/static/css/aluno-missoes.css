@@ -7,3 +7,8 @@
 
     .empty-state { text-align:center; padding:48px 20px; color:var(--muted); }
     .empty-state .em-text { font-size:0.9rem; font-weight:600; }
+
+    @media (max-width:600px){
+      main { padding:22px 14px; }
+      .missoes-icone { font-size:2.4rem; }
+    }

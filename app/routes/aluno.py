@@ -87,6 +87,19 @@ def cadastro():
     }), codigo
 
 
+@aluno_bp.route('/aluno/turmas/buscar', methods=['GET'])
+def buscar_turma():
+    if not session.get('aluno_id'):
+        return jsonify({'sucesso': False, 'erro': 'Não autenticado'}), 401
+
+    codigo = request.args.get('codigo', '')
+    turma, erro, http_codigo = aluno_service.buscar_turma_por_codigo(codigo)
+    if erro:
+        return jsonify({'sucesso': False, 'erro': erro}), http_codigo
+
+    return jsonify({'sucesso': True, 'turma': turma}), http_codigo
+
+
 @aluno_bp.route('/aluno/questoes', methods=['GET'])
 def questoes():
     aluno_id = session.get('aluno_id')

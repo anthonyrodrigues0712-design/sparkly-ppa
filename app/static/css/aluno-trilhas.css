@@ -76,3 +76,19 @@
     .licao-info { flex:1; min-width:0; }
     .licao-nome { font-size:.9rem; font-weight:900; }
     .licao-progresso { font-size:.75rem; color:var(--muted); font-weight:700; }
+
+    /* ── Responsividade ── */
+    @media (max-width:768px){
+      main { padding:24px 16px; }
+      .questoes-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:480px){
+      main { padding:18px 12px; }
+      .filtros { flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:6px; margin-bottom:18px; }
+      .filtro-btn { flex-shrink:0; }
+      .modulo-bloco { padding:16px 14px; }
+      .modulo-header { flex-direction:column; align-items:flex-start; gap:6px; }
+      .licao-no { padding:12px 14px; gap:10px; }
+      .licao-icone { width:32px; height:32px; min-width:32px; font-size:.85rem; }
+      .questao-card { padding:16px; }
+    }

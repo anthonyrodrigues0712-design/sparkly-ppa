@@ -66,6 +66,18 @@
   </div>
 
   <div class="section-header">
+    <div class="section-title">Ingressar em turma</div>
+  </div>
+  <div class="ingressar-card mb-3">
+    <div class="ingressar-form">
+      <input type="text" class="form-input" id="codigo-turma-input" placeholder="Ex: 7HXK2M" maxlength="10" autocapitalize="characters">
+      <button class="btn btn-primary" id="btnBuscarTurma" onclick="buscarTurmaPorCodigo()">Ingressar</button>
+    </div>
+    <div class="ingressar-hint">Peça o código da turma ao seu professor e digite aqui para ver as informações.</div>
+    <div id="turmaEncontrada"></div>
+  </div>
+
+  <div class="section-header">
     <div class="section-title">Sua missão mais próxima</div>
     <a href="/aluno-missoes" class="btn btn-outline btn-sm">Ver todas →</a>
   </div>
@@ -86,6 +98,7 @@
     <div class="empty-state"><div class="spinner" style="margin:0 auto;"></div></div>
   </div>
 </main>
+  <div id="toast"></div>
   <script src="/static/js/gamificacao.js"></script>
   <script src="/static/js/aluno-dashboard.js"></script>
 </body>

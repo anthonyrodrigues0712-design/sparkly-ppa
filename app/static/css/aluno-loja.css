@@ -78,3 +78,18 @@
     .pet-cor-nome { font-size:0.68rem; font-weight:800; color:var(--text); text-align:center; line-height:1.15; }
     .pet-cor-custo { font-size:0.68rem; font-weight:800; color:var(--purple); }
     .pet-cor-selo { font-size:0.68rem; font-weight:800; color:var(--green); }
+
+    /* ── Responsividade ── */
+    @media (max-width:600px){
+      main { padding:24px 14px; }
+      .pet-card { padding:18px; }
+      .pet-bicho { width:96px; height:96px; }
+      .pet-olho { top:34px; width:11px; height:11px; }
+      .pet-olho-esq { left:26px; } .pet-olho-dir { right:26px; }
+      .pet-bochecha { top:50px; width:13px; height:8px; }
+      .pet-bochecha-esq { left:14px; } .pet-bochecha-dir { right:14px; }
+      .pet-cores-grid { grid-template-columns:repeat(auto-fill, minmax(72px,1fr)); gap:8px; }
+    }
+    @media (max-width:380px){
+      .pet-cores-grid { grid-template-columns:repeat(3,1fr); }
+    }

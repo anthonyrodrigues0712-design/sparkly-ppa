@@ -6,6 +6,52 @@
   document.getElementById('nomeAluno').textContent = nome;
   document.getElementById('nomeHero').textContent  = primeiroNome;
 
+  function toast(msg, tipo='success') {
+    const t = document.getElementById('toast');
+    if(!t) return;
+    t.textContent = msg; t.className = 'show '+tipo;
+    setTimeout(()=>{t.className='';},3500);
+  }
+
+  async function buscarTurmaPorCodigo() {
+    const input = document.getElementById('codigo-turma-input');
+    const codigo = input.value.trim();
+    const resultado = document.getElementById('turmaEncontrada');
+    if(!codigo) { toast('Digite o código da turma','error'); return; }
+
+    const btn = document.getElementById('btnBuscarTurma');
+    btn.disabled = true;
+    resultado.innerHTML = '<div class="loading"><div class="spinner" style="margin:0 auto;"></div></div>';
+
+    try {
+      const r = await fetch(`/api/aluno/turmas/buscar?codigo=${encodeURIComponent(codigo)}`);
+      const data = await r.json();
+      if (!data.sucesso) {
+        resultado.innerHTML = `<div class="turma-nao-encontrada">${data.erro||'Turma não encontrada'}</div>`;
+        return;
+      }
+      const t = data.turma;
+      resultado.innerHTML = `
+        <div class="turma-encontrada-card">
+          <div class="tec-icone">🎓</div>
+          <div class="tec-info">
+            <div class="tec-nome">${t.nome}</div>
+            <div class="tec-meta">
+              ${t.professor ? `Professor(a): ${t.professor} · ` : ''}${t.numero_sala ? `Sala ${t.numero_sala} · ` : ''}${t.total_modulos} módulo(s) · ${t.total_licoes} lição(ões)
+            </div>
+          </div>
+        </div>`;
+    } catch(e) {
+      resultado.innerHTML = `<div class="turma-nao-encontrada">Erro ao buscar a turma. Tente novamente.</div>`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById('codigo-turma-input')?.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter') buscarTurmaPorCodigo();
+  });
+
   async function carregarDados() {
     try {
       const r = await fetch('/api/aluno');

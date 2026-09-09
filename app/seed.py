@@ -498,9 +498,14 @@ def _obter_ou_criar_estrutura_padrao():
 
     materia = Materia.query.filter_by(nome_materia=NOME_MATERIA, id_professor=professor.id_professor).first()
     if not materia:
-        materia = Materia(nome_materia=NOME_MATERIA, numero_sala="101", id_professor=professor.id_professor)
+        from app.services.professor_service import _gerar_codigo_turma
+        materia = Materia(nome_materia=NOME_MATERIA, numero_sala="101",
+                           codigo_turma=_gerar_codigo_turma(), id_professor=professor.id_professor)
         db.session.add(materia)
         db.session.flush()
+    elif not materia.codigo_turma:
+        from app.services.professor_service import _gerar_codigo_turma
+        materia.codigo_turma = _gerar_codigo_turma()
 
     modulo = Modulo.query.filter_by(nome=NOME_MODULO, id_materia=materia.id_materia).first()
     if not modulo:

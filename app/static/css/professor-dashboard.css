@@ -52,6 +52,29 @@
     .ts-num   { font-size:1.4rem; font-weight:900; color:var(--blue); }
     .ts-label { font-size:.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:800; }
 
+    /* Código da turma (ingresso, estilo Google Classroom) */
+    .t-codigo {
+      display:flex; align-items:center; gap:8px;
+      background:var(--green-soft); border:2px dashed var(--green);
+      border-radius:var(--radius-sm); padding:8px 12px; margin-bottom:14px;
+      cursor:pointer; transition:all .15s;
+    }
+    .t-codigo:hover { background:var(--green); }
+    .t-codigo:hover .t-codigo-label,
+    .t-codigo:hover .t-codigo-valor { color:#fff; }
+    .t-codigo-label { font-size:.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--green-dk); font-weight:800; }
+    .t-codigo-valor { font-size:.95rem; font-weight:900; color:var(--green-dk); letter-spacing:2px; margin-left:auto; }
+    .t-codigo-icon  { font-size:.85rem; }
+
+    .codigo-turma-box {
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+      background:var(--green-soft); border:2px dashed var(--green);
+      border-radius:var(--radius); padding:16px 20px; margin-bottom:20px; cursor:pointer;
+    }
+    .ctb-label { font-size:.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--green-dk); font-weight:800; margin-bottom:4px; }
+    .ctb-hint  { text-transform:none; letter-spacing:normal; font-weight:600; color:var(--muted); }
+    .ctb-valor { font-size:1.6rem; font-weight:900; color:var(--green-dk); letter-spacing:4px; }
+
     /* Detalhe */
     .back-btn {
       display:inline-flex; align-items:center; gap:8px; cursor:pointer;
@@ -177,4 +200,42 @@
     .nota-baixa { color:var(--red); font-weight:900; }
 
     @media(max-width:700px){ .detalhe-grid{grid-template-columns:1fr;} .stats-row{grid-template-columns:1fr;} }
+
+    /* ── Responsividade ── */
+    @media (max-width:900px){
+      .container { flex-direction:column; }
+      nav.sidebar {
+        width:100%; min-height:auto; display:flex; gap:8px;
+        padding:10px 12px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+        border-right:none; border-bottom:2px solid var(--border);
+      }
+      .nav-label { display:none; }
+      .nav-item { flex-shrink:0; white-space:nowrap; }
+      main { padding:18px; }
+      .turmas-grid { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }
+    }
+    @media (max-width:700px){
+      .questoes-toolbar { flex-direction:column; align-items:stretch; gap:10px; }
+      .questoes-toolbar .btn { width:100%; justify-content:center; }
+      .turmas-grid { grid-template-columns:1fr; }
+      .modal { padding:20px; }
+      .modal-title { font-size:1.1rem; }
+      .t-stats { flex-wrap:wrap; gap:14px; }
+    }
+    @media (max-width:480px){
+      main { padding:14px; }
+      .stat-icon { font-size:1.3rem; }
+      .stat-value { font-size:1.5rem; }
+      .modulo-header { flex-direction:column; align-items:flex-start; gap:6px; }
+      .modulo-actions { align-self:flex-end; }
+      .questao-item { flex-direction:column; align-items:flex-start; gap:10px; padding:14px 16px; }
+      .questao-actions { align-self:flex-end; }
+      .codigo-turma-box { flex-direction:column; align-items:flex-start; gap:10px; }
+      .ctb-valor { font-size:1.3rem; }
+      .t-codigo { flex-wrap:wrap; }
+      .t-codigo-valor { margin-left:0; }
+      .alternativa-row { flex-wrap:wrap; }
+      .modal-footer { flex-direction:column-reverse; }
+      .modal-footer .btn { width:100%; justify-content:center; }
+    }
   

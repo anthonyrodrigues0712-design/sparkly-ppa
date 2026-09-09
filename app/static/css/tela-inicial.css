@@ -5,4 +5,12 @@
     .hero h1 { font-size:2.8rem; font-weight:900; color:var(--green); margin-bottom:8px; }
     .hero p  { color:var(--muted); font-size:1rem; font-weight:600; margin-bottom:32px; }
     .hero-btns { display:flex; flex-direction:column; gap:12px; }
+
+    /* ── Responsividade ── */
+    @media (max-width:480px){
+      .hero { padding:16px; }
+      .hero-owl { font-size:3.5rem; }
+      .hero h1 { font-size:2rem; }
+      .hero p { font-size:.9rem; margin-bottom:24px; }
+    }
   

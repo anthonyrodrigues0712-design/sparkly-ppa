@@ -1,4 +1,20 @@
+import random
+import string
+
 from app.models import db, Aluno, Materia, Modulo, Licao, ModeloQuestao, QuestaoInstanciada, Desempenho
+
+# Caracteres usados no código da turma: letras maiúsculas e números,
+# excluindo os que costumam ser confundidos entre si (0/O, 1/I).
+_ALFABETO_CODIGO = ''.join(c for c in (string.ascii_uppercase + string.digits) if c not in 'O0I1')
+_TAMANHO_CODIGO = 6
+
+
+def _gerar_codigo_turma():
+    """Gera um código alfanumérico único (estilo Google Classroom) para a turma."""
+    while True:
+        codigo = ''.join(random.choices(_ALFABETO_CODIGO, k=_TAMANHO_CODIGO))
+        if not Materia.query.filter_by(codigo_turma=codigo).first():
+            return codigo
 
 
 def _instancia_ids_da_materia(materia):
@@ -29,6 +45,7 @@ def listar_turmas(professor_id):
             'id': m.id_materia,
             'nome': m.nome_materia,
             'numero_sala': m.numero_sala,
+            'codigo_turma': m.codigo_turma,
             'total_modulos': len(m.modulos),
             'total_licoes': _total_licoes(m),
             'total_alunos': total_alunos
@@ -44,6 +61,7 @@ def criar_turma(professor_id, nome, numero_sala=None):
     try:
         materia = Materia(nome_materia=nome.strip(),
                            numero_sala=(numero_sala or '').strip() or None,
+                           codigo_turma=_gerar_codigo_turma(),
                            id_professor=professor_id)
         db.session.add(materia)
         db.session.commit()

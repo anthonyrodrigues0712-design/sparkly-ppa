@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash
-from app.models import db, Aluno, Desempenho, Licao
+from app.models import db, Aluno, Desempenho, Licao, Materia
 
 
 def obter_dados_aluno(aluno_id):
@@ -26,6 +26,21 @@ def obter_dados_aluno(aluno_id):
             for l in licoes
         ]
     }
+
+
+def buscar_turma_por_codigo(codigo):
+    """Busca uma turma pelo código de ingresso (estilo Google Classroom).
+
+    Retorna (turma_dict, erro, codigo_http).
+    """
+    if not codigo or not codigo.strip():
+        return None, 'Informe o código da turma', 400
+
+    materia = Materia.query.filter_by(codigo_turma=codigo.strip().upper()).first()
+    if not materia:
+        return None, 'Nenhuma turma encontrada com esse código', 404
+
+    return materia.to_dict_publico(), None, 200
 
 
 def cadastrar_aluno(nome, email, usuario, senha, genero='Prefiro não dizer', nome_social=None):

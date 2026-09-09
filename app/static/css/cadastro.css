@@ -22,4 +22,12 @@
       font-weight:600; color:var(--text); cursor:pointer;
     }
     .radio-option input[type="radio"] { width:18px; height:18px; accent-color:var(--green); cursor:pointer; }
+
+    /* ── Responsividade ── */
+    @media (max-width:480px){
+      .wrap { padding:16px; max-width:100%; }
+      .logo-big { font-size:1.6rem; }
+      .tagline { font-size:.78rem; margin-bottom:20px; }
+      .toggle-group { flex-direction:column; }
+    }
   

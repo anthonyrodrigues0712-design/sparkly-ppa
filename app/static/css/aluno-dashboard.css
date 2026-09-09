@@ -70,4 +70,75 @@
     .meu-pet-nome { font-size:1rem; font-weight:900; color:var(--text); }
     .meu-pet-nivel { font-size:0.72rem; font-weight:800; color:var(--green-dk); }
     .meu-pet-seta { font-size:0.8rem; font-weight:800; color:var(--green); white-space:nowrap; }
+
+    /* Ingressar em turma */
+    .ingressar-card {
+      background:var(--white); border:2px solid var(--border);
+      border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);
+    }
+    .ingressar-form { display:flex; gap:10px; }
+    .ingressar-form .form-input { flex:1; }
+    .form-input {
+      background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm);
+      color:var(--text); font-family:var(--font); font-size:.9rem; font-weight:700;
+      padding:11px 14px; outline:none; transition:border-color .15s; letter-spacing:1px;
+      text-transform:uppercase;
+    }
+    .form-input:focus { border-color:var(--green); }
+    .ingressar-hint { font-size:.75rem; color:var(--muted); font-weight:600; margin-top:10px; }
+
+    .turma-encontrada-card {
+      display:flex; align-items:center; gap:14px;
+      background:var(--green-soft); border:2px solid var(--green);
+      border-radius:var(--radius); padding:16px 18px; margin-top:14px;
+    }
+    .tec-icone { font-size:1.8rem; flex-shrink:0; }
+    .tec-nome { font-size:1rem; font-weight:900; color:var(--green-dk); margin-bottom:2px; }
+    .tec-meta { font-size:.78rem; font-weight:600; color:var(--text); }
+
+    .turma-nao-encontrada {
+      background:var(--red-soft); border:2px solid var(--red); color:var(--red);
+      border-radius:var(--radius); padding:14px 18px; margin-top:14px;
+      font-size:.85rem; font-weight:700;
+    }
+
+    .loading { color:var(--muted); font-size:.88rem; padding:12px; text-align:center; font-weight:600; }
+
+    @media(max-width:600px){
+      .ingressar-form { flex-direction:column; }
+    }
+
+    /* Toast */
+    #toast {
+      position:fixed; bottom:24px; right:24px;
+      background:var(--white); border:2px solid var(--border); border-radius:var(--radius);
+      padding:12px 20px; font-size:.85rem; font-weight:800;
+      opacity:0; transform:translateY(10px); transition:all .3s;
+      z-index:2000; pointer-events:none; box-shadow:var(--shadow-md);
+    }
+    #toast.show { opacity:1; transform:translateY(0); }
+    #toast.success { border-color:var(--green); color:var(--green); }
+    #toast.error   { border-color:var(--red);   color:var(--red); }
+
+    /* ── Responsividade ── */
+    @media (max-width:768px){
+      main { padding:24px 18px; }
+      .welcome { padding:22px 20px; }
+      .welcome h1 { font-size:1.35rem; }
+      .stat-value { font-size:1.7rem; }
+    }
+    @media (max-width:480px){
+      main { padding:18px 12px; }
+      .welcome { padding:18px; gap:14px; }
+      .welcome h1 { font-size:1.2rem; }
+      .welcome p { font-size:.78rem; }
+      .welcome-avatar { width:48px; height:48px; }
+      .stat-card { padding:14px; }
+      .stat-value { font-size:1.5rem; }
+      .stat-label { font-size:.65rem; }
+      .licao-item { flex-direction:column; align-items:flex-start; gap:8px; padding:14px 16px; }
+      .meu-pet-card { flex-direction:column; align-items:flex-start; text-align:left; gap:10px; }
+      .meu-pet-seta { align-self:flex-end; }
+      .ingressar-card { padding:16px; }
+    }
   

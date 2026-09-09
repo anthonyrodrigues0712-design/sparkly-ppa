@@ -69,12 +69,25 @@
           <div class="t-nome">${t.nome}</div>
           <div class="t-sala">Sala ${t.numero_sala||'—'}</div>
         </div>
+        <div class="t-codigo" onclick="copiarCodigoTurma(event,'${t.codigo_turma||''}')" title="Copiar código da turma">
+          <span class="t-codigo-label">Código</span>
+          <span class="t-codigo-valor">${t.codigo_turma||'—'}</span>
+          <span class="t-codigo-icon">📋</span>
+        </div>
         <div class="t-stats">
           <div class="t-stat"><div class="ts-num">${t.total_licoes}</div><div class="ts-label">Lições</div></div>
           <div class="t-stat"><div class="ts-num">${t.total_alunos}</div><div class="ts-label">Alunos</div></div>
         </div>
         <button class="btn btn-outline btn-sm btn-full mt-2">Ver turma →</button>
       </div>`).join('');
+  }
+
+  function copiarCodigoTurma(ev, codigo) {
+    ev.stopPropagation();
+    if(!codigo) return;
+    navigator.clipboard?.writeText(codigo).then(()=>{
+      toast('Código copiado! ✓');
+    }).catch(()=>{ toast('Não foi possível copiar o código','error'); });
   }
 
   async function verTurma(id) {
@@ -104,6 +117,13 @@
       <button class="back-btn" onclick="fecharDetalhe()">← Voltar às turmas</button>
       <div class="page-title mb-1">${turma.nome}</div>
       <div class="page-sub mb-3">Sala ${turma.numero_sala||'—'} · ID ${turma.id}</div>
+      <div class="codigo-turma-box" onclick="copiarCodigoTurma(event,'${turma.codigo_turma||''}')" title="Copiar código da turma">
+        <div>
+          <div class="ctb-label">Código da turma <span class="ctb-hint">(visível só para você — compartilhe com seus alunos)</span></div>
+          <div class="ctb-valor">${turma.codigo_turma||'—'}</div>
+        </div>
+        <span class="btn btn-outline btn-sm">📋 Copiar</span>
+      </div>
       <div class="detalhe-grid">
         <div class="panel">
           <div class="panel-title">

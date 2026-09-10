@@ -17,15 +17,67 @@
 
   let questaoAtual = null, respostaSelecionada = null, jaConfirmou = false;
 
-  function proximaQuestaoDaFila() {
+  // ── Estado da fila da lição (persistido em sessionStorage) ──
+  function chaveRevisao(id) { return `sparkly_revisao_${id}`; }
+
+  function lerEstado() {
     if (!licaoId) return null;
     try {
       const estado = JSON.parse(sessionStorage.getItem('licaoAtual') || 'null');
       if (!estado || estado.licaoId !== licaoId) return null;
-      const idx = estado.fila.indexOf(questaoId);
-      if (idx === -1 || idx === estado.fila.length - 1) return null;
-      return estado.fila[idx + 1];
+      estado.original = estado.original || [];
+      estado.contadas = estado.contadas || [];
+      estado.erradas = estado.erradas || [];
+      estado.acertosOriginais = estado.acertosOriginais || 0;
+      estado.modo = estado.modo || 'normal';
+      return estado;
     } catch (e) { return null; }
+  }
+
+  function salvarEstado(estado) {
+    sessionStorage.setItem('licaoAtual', JSON.stringify(estado));
+  }
+
+  function salvarRevisaoPendente(licaoIdAlvo, listaIds) {
+    if (listaIds.length) localStorage.setItem(chaveRevisao(licaoIdAlvo), JSON.stringify(listaIds));
+    else localStorage.removeItem(chaveRevisao(licaoIdAlvo));
+  }
+
+  // Registra o resultado da questão atual no estado da fila:
+  // - conta a questão como "respondida original" na primeira vez que aparece
+  // - se errou, marca para retornar ao fim da fila (e da lista de revisão)
+  function registrarResultadoNaFila(correto) {
+    const estado = lerEstado();
+    if (!estado) return null;
+
+    const eraOriginalNaoContada = estado.modo === 'normal'
+      && estado.original.includes(questaoId)
+      && !estado.contadas.includes(questaoId);
+
+    if (eraOriginalNaoContada) {
+      estado.contadas.push(questaoId);
+      if (correto) estado.acertosOriginais += 1;
+    }
+
+    if (!correto) {
+      if (!estado.erradas.includes(questaoId)) estado.erradas.push(questaoId);
+      // Remove ocorrência atual e reinsere a questão ao final da fila.
+      estado.fila = estado.fila.filter(id => id !== questaoId);
+      estado.fila.push(questaoId);
+    } else {
+      // Acertou: some da lista de erradas (caso estivesse revisando) e não repete.
+      estado.erradas = estado.erradas.filter(id => id !== questaoId);
+    }
+
+    salvarEstado(estado);
+    return estado;
+  }
+
+  function proximaQuestaoDaFila(estado) {
+    if (!licaoId || !estado) return null;
+    const idx = estado.fila.indexOf(questaoId);
+    if (idx === -1 || idx === estado.fila.length - 1) return null;
+    return estado.fila[idx + 1];
   }
 
   async function carregarQuestao() {
@@ -156,6 +208,8 @@
   }
 
   function mostrarResultado(data) {
+    const estado = registrarResultadoNaFila(data.correto);
+
     document.getElementById('telaQuestao').style.display = 'none';
     document.getElementById('telaResultado').style.display = 'flex';
     document.getElementById('resEmoji').textContent = data.correto ? '' : '';
@@ -180,17 +234,82 @@
     }
     gami.innerHTML = partes.join('');
 
-    const proximaId = proximaQuestaoDaFila();
+    // Chegou ao fim das questões ORIGINAIS do módulo (antes de emendar as erradas)?
+    const fimDasOriginais = estado && estado.modo === 'normal'
+      && estado.contadas.length >= estado.original.length
+      && estado.original.length > 0;
+
+    if (fimDasOriginais && estado.erradas.length > 0) {
+      const rendimento = Math.round((estado.acertosOriginais / estado.original.length) * 100);
+      estado.modo = 'revisaoAtiva';
+      salvarEstado(estado);
+      mostrarTelaRevisao(estado, rendimento);
+      return;
+    }
+
+    renderAcoesResultado(estado);
+  }
+
+  function renderAcoesResultado(estado) {
+    const proximaId = proximaQuestaoDaFila(estado);
     const acoes = document.querySelector('#telaResultado .resultado-acoes');
     if (proximaId) {
       acoes.innerHTML = `
         <button class="btn btn-primary btn-full btn-lg" onclick="irParaProximaQuestao(${proximaId})">Próxima questão →</button>
         <a href="/aluno-trilhas" class="btn btn-outline btn-full">Sair da lição</a>`;
     } else if (licaoId) {
+      if (estado) salvarRevisaoPendente(licaoId, estado.erradas);
       acoes.innerHTML = `
         <a href="/aluno-trilhas" class="btn btn-primary btn-full btn-lg">🎉 Lição concluída! Ver trilha</a>
         <a href="/aluno-dashboard" class="btn btn-outline btn-full">Dashboard</a>`;
     }
+  }
+
+  // Tela exibida ao final das questões originais do módulo quando há erros pendentes.
+  // Abaixo de 70% de rendimento: revisão sugerida com destaque forte.
+  // 70% ou mais: revisão totalmente opcional.
+  function mostrarTelaRevisao(estado, rendimento) {
+    document.getElementById('telaResultado').style.display = 'none';
+    let tela = document.getElementById('telaRevisao');
+    if (!tela) {
+      tela = document.createElement('div');
+      tela.id = 'telaRevisao';
+      document.body.appendChild(tela);
+    }
+    tela.style.display = 'flex';
+
+    const abaixoDaMeta = rendimento < 70;
+    const titulo = abaixoDaMeta
+      ? 'Vamos revisar! Sua trilha para o conhecimento só está começando'
+      : 'Mandou bem! Que tal revisar o que errou?';
+    const sub = abaixoDaMeta
+      ? `Você acertou ${rendimento}% das questões originais. Revisar agora ajuda a fixar o conteúdo.`
+      : `Você atingiu ${rendimento}% de rendimento — ótimo! A revisão das questões erradas é opcional.`;
+
+    tela.innerHTML = `
+      <div class="revisao-wrap">
+        <div class="revisao-icone">${abaixoDaMeta ? '📚' : '✨'}</div>
+        <div class="revisao-titulo">${titulo}</div>
+        <p class="revisao-sub">${sub}</p>
+        <div class="revisao-acoes">
+          <button class="btn btn-outline btn-full" onclick="revisarMaisTarde()">Revisar mais tarde</button>
+          <button class="btn btn-comecar btn-full btn-lg" onclick="comecarRevisaoAgora()">✨ Vamos começar! ✨</button>
+        </div>
+      </div>`;
+  }
+
+  function revisarMaisTarde() {
+    const estado = lerEstado();
+    if (estado) salvarRevisaoPendente(licaoId, estado.erradas);
+    sessionStorage.removeItem('licaoAtual');
+    window.location.href = '/aluno-trilhas';
+  }
+
+  function comecarRevisaoAgora() {
+    const estado = lerEstado();
+    document.getElementById('telaRevisao').style.display = 'none';
+    document.getElementById('telaResultado').style.display = 'flex';
+    renderAcoesResultado(estado);
   }
 
   function irParaProximaQuestao(id) {

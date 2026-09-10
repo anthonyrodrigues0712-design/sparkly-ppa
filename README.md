@@ -243,7 +243,7 @@ Os corações (❤️) e pontos (⭐) do aluno aparecem na navbar de todas as p�
 3. (Opcional) Popule o banco com as questões iniciais de Física e os usuários padrão de teste:
 
    ```bash
-   python init_db.py          # ou: flask seed
+   python init_db.py          # ou: flask seed (Se um arquivo chamado "sparkly.db" já estiver criado, apague-o e rode o comando novamente, isso evita que ocorra erros de popularização)
    ```
 
    Isso cria, além do banco de questões, os seguintes usuários de teste (todas as senhas são fixas e servem só para desenvolvimento — **não usar em produção**):

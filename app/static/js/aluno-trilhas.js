@@ -46,6 +46,17 @@
       </section>`).join('');
   }
 
+  // ── Revisão pendente (questões erradas salvas para "revisar mais tarde") ──
+  function chaveRevisao(licaoId) { return `sparkly_revisao_${licaoId}`; }
+
+  function obterRevisaoPendente(licaoId) {
+    try {
+      const bruto = localStorage.getItem(chaveRevisao(licaoId));
+      const lista = bruto ? JSON.parse(bruto) : [];
+      return Array.isArray(lista) ? lista : [];
+    } catch (e) { return []; }
+  }
+
   function renderLicao(licao) {
     let estadoClasse = 'licao-bloqueada';
     let icone = '🔒';
@@ -53,6 +64,7 @@
     else if (licao.desbloqueada) { estadoClasse = 'licao-disponivel'; icone = '▶'; }
 
     const clickable = licao.desbloqueada ? `onclick="abrirLicao(${licao.id})"` : '';
+    const revisaoPendente = licao.desbloqueada ? obterRevisaoPendente(licao.id) : [];
 
     return `
       <div class="licao-no ${estadoClasse}" ${clickable}>
@@ -61,9 +73,14 @@
           <div class="licao-nome">${licao.nome}</div>
           <div class="licao-progresso">${licao.questoes_concluidas}/${licao.total_questoes} questões</div>
         </div>
-        ${licao.desbloqueada
-          ? `<button class="btn ${licao.completa ? 'btn-outline' : 'btn-primary'} btn-sm">${licao.completa ? 'Praticar' : 'Continuar →'}</button>`
-          : `<span class="text-muted" style="font-size:.72rem;font-weight:700;">Bloqueada</span>`}
+        <div class="licao-acoes-grupo">
+          ${licao.desbloqueada
+            ? `<button class="btn ${licao.completa ? 'btn-outline' : 'btn-primary'} btn-sm">${licao.completa ? 'Praticar' : 'Continuar →'}</button>`
+            : `<span class="text-muted" style="font-size:.72rem;font-weight:700;">Bloqueada</span>`}
+          ${revisaoPendente.length
+            ? `<button class="btn btn-revisar btn-sm" onclick="event.stopPropagation(); revisarErros(${licao.id})">🔁 Revisar erros (${revisaoPendente.length})</button>`
+            : ''}
+        </div>
       </div>`;
   }
 
@@ -77,11 +94,24 @@
       // Guarda a fila de questões da lição para o desafio navegar em sequência.
       const pendentes = data.questoes.filter(q => !q.ja_concluida);
       const fila = (pendentes.length ? pendentes : data.questoes).map(q => q.id);
-      sessionStorage.setItem('licaoAtual', JSON.stringify({ licaoId, fila }));
+      sessionStorage.setItem('licaoAtual', JSON.stringify({
+        licaoId, fila, original: [...fila], acertosOriginais: 0,
+        contadas: [], erradas: [], modo: 'normal'
+      }));
       window.location.href = `/aluno-desafio?questao=${fila[0]}&licao=${licaoId}`;
     } catch (e) {
       alert('Erro ao abrir lição: ' + e.message);
     }
+  }
+
+  function revisarErros(licaoId) {
+    const fila = obterRevisaoPendente(licaoId);
+    if (!fila.length) return;
+    sessionStorage.setItem('licaoAtual', JSON.stringify({
+      licaoId, fila, original: [], acertosOriginais: 0,
+      contadas: [], erradas: [], modo: 'revisao'
+    }));
+    window.location.href = `/aluno-desafio?questao=${fila[0]}&licao=${licaoId}`;
   }
 
   function sair() { sessionStorage.clear(); window.location.href = '/login'; }

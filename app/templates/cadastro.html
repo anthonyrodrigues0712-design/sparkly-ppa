@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sparkly — Cadastro</title>
+  <script>(function(){try{if(localStorage.getItem('sparkly_tema')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
   <link rel="stylesheet" href="/static/sparkly.css">
   <link rel="stylesheet" href="/static/css/cadastro.css">
 </head>
 <body>
+<div class="public-theme-bar" data-theme-switch-slot></div>
 <div class="wrap">
   <div class="owl">🐝</div>
   <div class="logo-big">Sparkly</div>
@@ -71,6 +73,7 @@
     Já tem conta? <a href="/login">Fazer login</a>
   </p>
 </div>
+  <script src="/static/js/theme.js"></script>
   <script src="/static/js/cadastro.js"></script>
 </body>
 </html>

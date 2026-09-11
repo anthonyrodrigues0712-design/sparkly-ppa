@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sparkly</title>
+  <script>(function(){try{if(localStorage.getItem('sparkly_tema')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
   <link rel="stylesheet" href="/static/sparkly.css">
   <link rel="stylesheet" href="/static/css/tela-inicial.css">
 </head>
 <body>
+<div class="public-theme-bar" data-theme-switch-slot></div>
 <div class="hero">
   <div class="hero-owl">🐝</div>
   <h1>Sparkly</h1>
@@ -17,5 +19,6 @@
     <a href="/login"    class="btn btn-outline btn-lg btn-full">Já tenho conta</a>
   </div>
 </div>
+<script src="/static/js/theme.js"></script>
 </body>
 </html>

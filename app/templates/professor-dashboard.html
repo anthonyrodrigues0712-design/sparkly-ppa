@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sparkly — Professor</title>
+  <script>(function(){try{if(localStorage.getItem('sparkly_tema')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
   <link rel="stylesheet" href="/static/sparkly.css">
   <link rel="stylesheet" href="/static/css/professor-dashboard.css">
 </head>
@@ -18,6 +19,7 @@
         style="width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;">P</div>
       <span id="professorNome" style="font-size:.82rem;font-weight:800;color:var(--green);">Professor</span>
     </div>
+    <span data-theme-switch-slot></span>
     <button class="btn btn-ghost btn-sm" onclick="sair()">Sair</button>
   </div>
 </nav>
@@ -236,6 +238,7 @@
 </div>
 
 <div id="toast"></div>
+  <script src="/static/js/theme.js"></script>
   <script src="/static/js/professor-dashboard.js"></script>
 </body>
 </html>

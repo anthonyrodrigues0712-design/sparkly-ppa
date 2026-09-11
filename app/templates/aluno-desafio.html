@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sparkly — Questão</title>
+  <script>(function(){try{if(localStorage.getItem('sparkly_tema')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
   <link rel="stylesheet" href="/static/sparkly.css">
   <link rel="stylesheet" href="/static/css/aluno-desafio.css">
 </head>
@@ -16,7 +17,10 @@
     <span class="gami-badge gami-pontos" id="navPontos">⭐ —</span>
     <span class="gami-badge gami-sparks" id="navSparks">⚡ —</span>
   </div>
-  <a href="/aluno-trilhas" class="btn btn-outline btn-sm">← Voltar</a>
+  <div class="d-flex align-center gap-2">
+    <span data-theme-switch-slot></span>
+    <a href="/aluno-trilhas" class="btn btn-outline btn-sm">← Voltar</a>
+  </div>
 </nav>
 
 <div id="telaLoading">
@@ -52,17 +56,23 @@
     <div class="feedback-box" id="feedbackBox">
       <div class="feedback-titulo" id="feedbackTitulo"></div>
       <div class="feedback-detalhe" id="feedbackDetalhe"></div>
+      <div class="feedback-timer" id="feedbackTimer">
+        <div class="feedback-timer-fill" id="feedbackTimerFill"></div>
+      </div>
     </div>
 
     <div class="acoes">
       <button class="btn btn-primary btn-confirmar btn-lg" id="btnConfirmar" onclick="confirmar()" disabled>
         Confirmar resposta
       </button>
+      <button class="btn btn-primary btn-confirmar btn-lg" id="btnContinuar" onclick="continuarAgora()" style="display:none;">
+        Continuar →
+      </button>
     </div>
   </div>
 </div>
 
-<div id="telaResultado" style="display:flex;">
+<div id="telaResultado" style="display:none;">
   <div class="resultado-wrap">
     <div class="resultado-emoji" id="resEmoji"></div>
     <div class="resultado-titulo" id="resTitulo"></div>
@@ -78,6 +88,7 @@
     </div>
   </div>
 </div>
+  <script src="/static/js/theme.js"></script>
   <script src="/static/js/gamificacao.js"></script>
   <script src="/static/js/aluno-desafio.js"></script>
 </body>

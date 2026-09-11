@@ -50,6 +50,77 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,.1);
 }
 
+/* ─── Tema escuro ───
+   Ativado via [data-theme="dark"] no <html>, controlado pelo switch da
+   barra superior (ver theme.js). Mantemos as cores de destaque (verde,
+   roxo, etc.) e ajustamos apenas as superfícies neutras para dar contraste
+   confortável no escuro. */
+html[data-theme="dark"] {
+  --bg:        #14151a;
+  --white:     #1e2028;
+  --surface:   #1e2028;
+  --border:    #333644;
+
+  --green-soft:#3a3f22;
+  --yellow-soft:#3a3624;
+  --red-soft:  #402323;
+  --blue-soft: #223038;
+  --purple-soft:#2f2438;
+
+  --text:      #f2f2f2;
+  --muted:     #b7b7c0;
+
+  --shadow: 0 2px 0 rgba(0,0,0,.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.45);
+}
+
+/* ─── Switch de tema (barra superior) ─── */
+.theme-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: var(--border);
+  flex: 0 0 auto;
+  transition: background .2s ease;
+}
+.theme-switch:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.theme-switch .theme-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  transition: transform .2s ease;
+}
+html[data-theme="dark"] .theme-switch { background: var(--purple); }
+html[data-theme="dark"] .theme-switch .theme-switch-thumb { transform: translateX(20px); }
+
+/* Barra de tema mínima usada nas telas sem navbar (inicial, login, cadastro) */
+.public-theme-bar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 20px;
+  z-index: 100;
+}
+
 /* ─── Reset ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

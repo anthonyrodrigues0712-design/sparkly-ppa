@@ -59,9 +59,19 @@
       if (correto) estado.acertosOriginais += 1;
     }
 
+    // Calcula a próxima questão da fila ANTES de mover a atual (se errada) para
+    // o final — caso contrário, ao empurrá-la para o fim, ela passaria a ser o
+    // último elemento e pareceria (erroneamente) que a fila acabou ali mesmo,
+    // mostrando "Ver trilha" mesmo havendo questões restantes no módulo.
+    const idxAtual = estado.fila.indexOf(questaoId);
+    estado.proximaId = (idxAtual !== -1 && idxAtual < estado.fila.length - 1)
+      ? estado.fila[idxAtual + 1]
+      : null;
+
     if (!correto) {
       if (!estado.erradas.includes(questaoId)) estado.erradas.push(questaoId);
-      // Remove ocorrência atual e reinsere a questão ao final da fila.
+      // Remove ocorrência atual e reinsere a questão ao final da fila, para
+      // que ela seja revisada novamente após as demais questões do módulo.
       estado.fila = estado.fila.filter(id => id !== questaoId);
       estado.fila.push(questaoId);
     } else {
@@ -75,9 +85,7 @@
 
   function proximaQuestaoDaFila(estado) {
     if (!licaoId || !estado) return null;
-    const idx = estado.fila.indexOf(questaoId);
-    if (idx === -1 || idx === estado.fila.length - 1) return null;
-    return estado.fila[idx + 1];
+    return estado.proximaId || null;
   }
 
   async function carregarQuestao() {
@@ -136,6 +144,9 @@
     document.getElementById('btnConfirmar').disabled = false;
   }
 
+  const TEMPO_TRANSICAO_MS = 10000;
+  let timeoutTransicao = null;
+
   async function confirmar() {
     if (jaConfirmou) return;
     const tipo = questaoAtual.tipo;
@@ -175,7 +186,7 @@
         salvarGamificacaoNaSessao(campos);
       }
       mostrarFeedback(data);
-      setTimeout(() => mostrarResultado(data), 2200);
+      iniciarTransicaoParaResultado(data);
     } catch(e) {
       const box = document.getElementById('feedbackBox');
       box.className = 'feedback-box incorreto'; box.style.display = 'block';
@@ -186,7 +197,47 @@
     }
   }
 
+  // Dá tempo para o aluno olhar o que acertou/errou antes de seguir em frente.
+  // Uma barrinha mostra a contagem regressiva e o aluno pode adiantar clicando em "Continuar".
+  function iniciarTransicaoParaResultado(data) {
+    const btnContinuar = document.getElementById('btnContinuar');
+    btnContinuar.style.display = 'inline-flex';
+    btnContinuar.classList.add('surgir-suave');
+    btnContinuar.onclick = () => continuarAgora(data);
+
+    const fill = document.getElementById('feedbackTimerFill');
+    fill.style.transition = 'none';
+    fill.style.width = '100%';
+    // força reflow para reiniciar a transição a partir de 100%
+    void fill.offsetWidth;
+    fill.style.transition = `width ${TEMPO_TRANSICAO_MS}ms linear`;
+    requestAnimationFrame(() => { fill.style.width = '0%'; });
+
+    timeoutTransicao = setTimeout(() => transicaoParaResultado(data), TEMPO_TRANSICAO_MS);
+  }
+
+  function continuarAgora(data) {
+    if (timeoutTransicao) { clearTimeout(timeoutTransicao); timeoutTransicao = null; }
+    transicaoParaResultado(data || ultimoResultado);
+  }
+
+  let ultimoResultado = null;
+
+  // Transição suave: a tela de questão esmaece e desliza para fora, e só então
+  // a tela de resultado aparece com um fade-in.
+  function transicaoParaResultado(data) {
+    ultimoResultado = data;
+    const telaQuestao = document.getElementById('telaQuestao');
+    telaQuestao.classList.add('tela-saindo');
+    setTimeout(() => {
+      telaQuestao.style.display = 'none';
+      telaQuestao.classList.remove('tela-saindo');
+      mostrarResultado(data);
+    }, 420);
+  }
+
   function mostrarFeedback(data) {
+    document.getElementById('btnConfirmar').style.display = 'none';
     const box = document.getElementById('feedbackBox');
     const alts = questaoAtual.conteudo.alternativas || [];
     const tipo = questaoAtual.tipo;
@@ -210,8 +261,10 @@
   function mostrarResultado(data) {
     const estado = registrarResultadoNaFila(data.correto);
 
-    document.getElementById('telaQuestao').style.display = 'none';
     document.getElementById('telaResultado').style.display = 'flex';
+    document.getElementById('telaResultado').classList.remove('tela-entrando');
+    void document.getElementById('telaResultado').offsetWidth;
+    document.getElementById('telaResultado').classList.add('tela-entrando');
     document.getElementById('resEmoji').textContent = data.correto ? '' : '';
     document.getElementById('resTitulo').textContent = data.correto ? 'Incrível!' : 'Quase lá!';
     document.getElementById('resTitulo').className = 'resultado-titulo ' + (data.correto?'correto':'incorreto');
@@ -277,6 +330,9 @@
       document.body.appendChild(tela);
     }
     tela.style.display = 'flex';
+    tela.classList.remove('tela-entrando');
+    void tela.offsetWidth;
+    tela.classList.add('tela-entrando');
 
     const abaixoDaMeta = rendimento < 70;
     const titulo = abaixoDaMeta
@@ -307,9 +363,18 @@
 
   function comecarRevisaoAgora() {
     const estado = lerEstado();
-    document.getElementById('telaRevisao').style.display = 'none';
-    document.getElementById('telaResultado').style.display = 'flex';
-    renderAcoesResultado(estado);
+    const telaRevisao = document.getElementById('telaRevisao');
+    telaRevisao.classList.add('tela-saindo');
+    setTimeout(() => {
+      telaRevisao.style.display = 'none';
+      telaRevisao.classList.remove('tela-saindo');
+      const telaResultado = document.getElementById('telaResultado');
+      telaResultado.style.display = 'flex';
+      telaResultado.classList.remove('tela-entrando');
+      void telaResultado.offsetWidth;
+      telaResultado.classList.add('tela-entrando');
+      renderAcoesResultado(estado);
+    }, 420);
   }
 
   function irParaProximaQuestao(id) {

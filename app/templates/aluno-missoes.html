@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sparkly — Missões</title>
+  <script>(function(){try{if(localStorage.getItem('sparkly_tema')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
   <link rel="stylesheet" href="/static/sparkly.css">
   <link rel="stylesheet" href="/static/css/aluno-missoes.css">
 </head>
@@ -24,6 +25,7 @@
       <a href="/aluno-loja" class="gami-badge gami-pontos" id="navPontos">⭐ —</a>
       <a href="/aluno-loja" class="gami-badge gami-sparks" id="navSparks">⚡ —</a>
     </div>
+    <span data-theme-switch-slot></span>
     <span id="nomeAluno" class="text-muted" style="font-size:.82rem;font-weight:800;"></span>
     <button class="btn btn-ghost btn-sm" onclick="sair()">Sair</button>
   </div>
@@ -40,6 +42,7 @@
     <div class="empty-state"><div class="spinner" style="margin:0 auto;"></div></div>
   </div>
 </main>
+  <script src="/static/js/theme.js"></script>
   <script src="/static/js/gamificacao.js"></script>
   <script src="/static/js/aluno-missoes.js"></script>
 </body>
